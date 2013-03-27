@@ -90,5 +90,3 @@ let error lazy_msg = log ERROR lazy_msg
 let warn  lazy_msg = log WARN  lazy_msg
 let info  lazy_msg = log INFO  lazy_msg
 let debug lazy_msg = log DEBUG lazy_msg
-
-(* FBR: add a use section here or an example program in the src tree *)
