@@ -27,9 +27,6 @@
 
 type log_level = FATAL | ERROR | WARN | INFO | DEBUG
 
-val int_of_level : log_level -> int
-val string_of_level : log_level -> string
-
 val set_log_level : log_level -> unit
 val set_output : out_channel -> unit
 
