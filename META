@@ -1,0 +1,11 @@
+# OASIS_START
+# DO NOT EDIT (digest: 6875925883ff4567ede9ea078d8d28fe)
+version = "0.1"
+description = "a simple logging library"
+archive(byte) = "dolog.cma"
+archive(byte, plugin) = "dolog.cma"
+archive(native) = "dolog.cmxa"
+archive(native, plugin) = "dolog.cmxs"
+exists_if = "dolog.cmxa"
+# OASIS_STOP
+
