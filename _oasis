@@ -9,5 +9,5 @@ Plugins:     META (0.3)
 Library dolog
   Path:       .
   BuildTools: ocamlbuild
+  CompiledObject: native
   Modules:    Log
-  
