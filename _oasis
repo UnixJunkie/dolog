@@ -1,6 +1,6 @@
 OASISFormat: 0.3
 Name:        dolog
-Version:     0.1
+Version:     0.2
 Synopsis:    a simple logging library
 Authors:     Francois Berenger
 License:     BSD3
@@ -9,5 +9,6 @@ Plugins:     META (0.3)
 Library dolog
   Path:       .
   BuildTools: ocamlbuild
+  BuildDepends: unix
   CompiledObject: native
   Modules:    Log
