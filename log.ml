@@ -43,6 +43,9 @@ let output = ref stderr
 let set_log_level l =
   level := l
 
+let get_log_level () =
+  !level
+
 let set_output o =
   output := o
 

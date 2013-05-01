@@ -28,6 +28,7 @@
 type log_level = FATAL | ERROR | WARN | INFO | DEBUG
 
 val set_log_level : log_level -> unit
+val get_log_level : unit -> log_level
 val set_output : out_channel -> unit
 
 val fatal : string Lazy.t -> unit
