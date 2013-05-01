@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 6129b9c09b9bd741ad6b627a23591369)
+# DO NOT EDIT (digest: d754a91ba80e266ad803c4e3c5a2cd18)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -15,4 +15,5 @@
 "_darcs": not_hygienic
 # Library dolog
 "dolog.cmxs": use_dolog
+<*.ml{,i}>: pkg_unix
 # OASIS_STOP
