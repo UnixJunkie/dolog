@@ -10,5 +10,5 @@ Library dolog
   Path:       .
   BuildTools: ocamlbuild
   BuildDepends: unix
-  CompiledObject: native
+  CompiledObject: best
   Modules:    Log
