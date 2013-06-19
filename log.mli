@@ -25,18 +25,28 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. *)
 
+(** {2 Logger} *)
+
+(** {4 Log levels} *)
+
 type log_level = FATAL | ERROR | WARN | INFO | DEBUG
+
+(** {4 Setup} *)
 
 val set_log_level : log_level -> unit
 val get_log_level : unit -> log_level
 val set_output : out_channel -> unit
 
-val color_on  : unit -> unit
-val color_off : unit -> unit
-val set_color_mapping : (log_level -> string) -> unit
+(** {4 Logging primitives} *)
 
 val fatal : string Lazy.t -> unit
 val error : string Lazy.t -> unit
 val warn : string Lazy.t -> unit
 val info : string Lazy.t -> unit
 val debug : string Lazy.t -> unit
+
+(** {4 Coloring of log levels (optional)} *)
+
+val color_on  : unit -> unit
+val color_off : unit -> unit
+val set_color_mapping : (log_level -> string) -> unit
