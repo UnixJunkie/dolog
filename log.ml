@@ -36,19 +36,6 @@ type log_level =
   | INFO
   | DEBUG
 
-(* defaults *)
-let level = ref ERROR
-let output = ref stderr
-
-let set_log_level l =
-  level := l
-
-let get_log_level () =
-  !level
-
-let set_output o =
-  output := o
-
 let int_of_level = function
   | FATAL -> 4
   | ERROR -> 3
@@ -63,7 +50,21 @@ let string_of_level = function
   | INFO  -> "INFO "
   | DEBUG -> "DEBUG"
 
-(* ANSI terminal colors for UNIX reference:
+(* defaults *)
+let level           = ref ERROR
+let output          = ref stderr
+let level_to_string = ref string_of_level (* no colors by default *)
+
+let set_log_level l =
+  level := l
+
+let get_log_level () =
+  !level
+
+let set_output o =
+  output := o
+
+(* ANSI terminal colors for UNIX:
    let fg_black   = "\027[30m"
    let fg_red     = "\027[31m"
    let fg_green   = "\027[32m"
@@ -75,6 +76,7 @@ let string_of_level = function
    let fg_default = "\027[39m"
    let fg_reset   = "\027[0m"
 *)
+(* default log levels color mapping *)
 let colored_string_of_level = function
   | FATAL -> "\027[35mFATAL\027[0m" (* magenta *)
   | ERROR -> "\027[31mERROR\027[0m" (* red *)
@@ -83,13 +85,13 @@ let colored_string_of_level = function
   | DEBUG -> "\027[36mDEBUG\027[0m" (* cyan *)
 
 let set_color_mapping f =
-  failwith "not implemented yet"
+  level_to_string := f
 
 let color_on () =
-  failwith "not implemented yet"
+  set_color_mapping colored_string_of_level
 
 let color_off () =
-  failwith "not implemented yet"
+  set_color_mapping string_of_level
 
 let timestamp_str lvl =
   let ts = Unix.gettimeofday() in
@@ -104,7 +106,7 @@ let timestamp_str lvl =
     (tm.Unix.tm_min)
     (tm.Unix.tm_sec)
     (int_of_float (1_000. *. us))
-    (string_of_level lvl)
+    (!level_to_string lvl)
 
 let short_timestamp_str lvl =
   sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
