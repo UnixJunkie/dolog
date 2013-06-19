@@ -75,6 +75,21 @@ let string_of_level = function
    let fg_default = "\027[39m"
    let fg_reset   = "\027[0m"
 *)
+let colored_string_of_level = function
+  | FATAL -> "\027[35mFATAL\027[0m" (* magenta *)
+  | ERROR -> "\027[31mERROR\027[0m" (* red *)
+  | WARN  -> "\027[33mWARN \027[0m" (* yellow *)
+  | INFO  -> "\027[32mINFO \027[0m" (* green *)
+  | DEBUG -> "\027[36mDEBUG\027[0m" (* cyan *)
+
+let set_color_mapping f =
+  failwith "not implemented yet"
+
+let color_on () =
+  failwith "not implemented yet"
+
+let color_off () =
+  failwith "not implemented yet"
 
 let timestamp_str lvl =
   let ts = Unix.gettimeofday() in
