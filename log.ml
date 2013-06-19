@@ -63,6 +63,19 @@ let string_of_level = function
   | INFO  -> "INFO "
   | DEBUG -> "DEBUG"
 
+(* ANSI terminal colors for UNIX reference:
+   let fg_black   = "\027[30m"
+   let fg_red     = "\027[31m"
+   let fg_green   = "\027[32m"
+   let fg_yellow  = "\027[33m"
+   let fg_blue    = "\027[34m"
+   let fg_magenta = "\027[35m"
+   let fg_cyan    = "\027[36m"
+   let fg_white   = "\027[37m"
+   let fg_default = "\027[39m"
+   let fg_reset   = "\027[0m"
+*)
+
 let timestamp_str lvl =
   let ts = Unix.gettimeofday() in
   let tm = Unix.localtime ts in
