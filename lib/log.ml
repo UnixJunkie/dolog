@@ -93,12 +93,16 @@ let color_on () =
 let color_off () =
   set_color_mapping string_of_level
 
-let timestamp_str lvl =
+let string_of_section = function
+  | None   -> ""
+  | Some s -> s ^ " "
+
+let timestamp_str section lvl =
   let ts = Unix.gettimeofday() in
   let tm = Unix.localtime ts in
   let us, _s = modf ts in
   (* example: "2012-01-13 18:26:52.091" *)
-  sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s: "
+  sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
     (1900 + tm.Unix.tm_year)
     (1    + tm.Unix.tm_mon)
     (tm.Unix.tm_mday)
@@ -106,6 +110,7 @@ let timestamp_str lvl =
     (tm.Unix.tm_min)
     (tm.Unix.tm_sec)
     (int_of_float (1_000. *. us))
+    (string_of_section section)
     (!level_to_string lvl)
 
 let short_timestamp_str lvl =
@@ -136,13 +141,17 @@ end
 module Make (S: SECTION) = struct
 
   let () =
-    section_width := max (4 + String.length S.section) !section_width
+    if S.section <> "" then
+      section_width := max (String.length S.section) !section_width
 
   let log lvl lazy_msg =
     if int_of_level lvl >= int_of_level !level then
       (* let now = short_timestamp_str lvl in *)
-      let now = timestamp_str lvl in
-      fprintf !output "%s%-*s%s\n%!" now !section_width S.section (Lazy.force lazy_msg)
+      let section = match !section_width with
+        | 0    -> None
+        | i    -> Some (Printf.sprintf "%-*s" i S.section) in
+      let now = timestamp_str section lvl in
+      fprintf !output "%s%s\n%!" now (Lazy.force lazy_msg)
     else ()
 
   let fatal lazy_msg = log FATAL lazy_msg
