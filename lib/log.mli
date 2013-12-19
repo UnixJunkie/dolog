@@ -39,6 +39,8 @@ val set_output : out_channel -> unit
 
 (** {4 Logging primitives} *)
 
+val log: log_level -> string Lazy.t -> unit
+
 val fatal : string Lazy.t -> unit
 val error : string Lazy.t -> unit
 val warn : string Lazy.t -> unit
