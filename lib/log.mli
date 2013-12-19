@@ -43,6 +43,8 @@ module type S = sig
 
   (** Signature for logging primitives. *)
 
+  (** {4 Lazy parameters} *)
+
   val log: log_level -> string Lazy.t -> unit
 
   val fatal : string Lazy.t -> unit
@@ -50,6 +52,16 @@ module type S = sig
   val warn : string Lazy.t -> unit
   val info : string Lazy.t -> unit
   val debug : string Lazy.t -> unit
+
+  (** {4 printf-like parameters} *)
+
+  val logf: log_level -> ('a, unit, string, unit) format4 -> 'a
+
+  val fatalf : ('a, unit, string, unit) format4 -> 'a
+  val errorf : ('a, unit, string, unit) format4 -> 'a
+  val warnf: ('a, unit, string, unit) format4 -> 'a
+  val infof : ('a, unit, string, unit) format4 -> 'a
+  val debugf : ('a, unit, string, unit) format4 -> 'a
 
 end
 

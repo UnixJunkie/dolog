@@ -121,6 +121,12 @@ module type S = sig
   val info : string Lazy.t -> unit
   val debug : string Lazy.t -> unit
 
+  val logf: log_level -> ('a, unit, string, unit) format4 -> 'a
+  val fatalf : ('a, unit, string, unit) format4 -> 'a
+  val errorf : ('a, unit, string, unit) format4 -> 'a
+  val warnf: ('a, unit, string, unit) format4 -> 'a
+  val infof : ('a, unit, string, unit) format4 -> 'a
+  val debugf : ('a, unit, string, unit) format4 -> 'a
 end
 
 module type SECTION = sig
@@ -144,6 +150,36 @@ module Make (S: SECTION) = struct
   let warn  lazy_msg = log WARN  lazy_msg
   let info  lazy_msg = log INFO  lazy_msg
   let debug lazy_msg = log DEBUG lazy_msg
+
+  let logf lvl fmt =
+    Printf.ksprintf (fun str ->
+        log lvl (lazy str)
+      ) fmt
+
+  let fatalf fmt =
+    Printf.ksprintf (fun str ->
+        fatal (lazy str)
+      ) fmt
+
+  let errorf fmt =
+    Printf.ksprintf (fun str ->
+        error (lazy str)
+      ) fmt
+
+  let warnf fmt =
+    Printf.ksprintf (fun str ->
+        warn (lazy str)
+      ) fmt
+
+  let infof fmt =
+    Printf.ksprintf (fun str ->
+        info (lazy str)
+      ) fmt
+
+  let debugf fmt =
+    Printf.ksprintf (fun str ->
+        debug (lazy str)
+      ) fmt
 
 end
 
