@@ -1,0 +1,3 @@
+0.3.0 (trunk)
+* Clean the build system
+* Expose `Log.log` to the user
