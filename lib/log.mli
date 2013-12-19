@@ -39,16 +39,43 @@ val set_output : out_channel -> unit
 
 (** {4 Logging primitives} *)
 
-val log: log_level -> string Lazy.t -> unit
+module type S = sig
 
-val fatal : string Lazy.t -> unit
-val error : string Lazy.t -> unit
-val warn : string Lazy.t -> unit
-val info : string Lazy.t -> unit
-val debug : string Lazy.t -> unit
+  (** Signature for logging primitives. *)
+
+  val log: log_level -> string Lazy.t -> unit
+
+  val fatal : string Lazy.t -> unit
+  val error : string Lazy.t -> unit
+  val warn : string Lazy.t -> unit
+  val info : string Lazy.t -> unit
+  val debug : string Lazy.t -> unit
+
+end
+
+include S
 
 (** {4 Coloring of log levels (optional)} *)
 
 val color_on  : unit -> unit
 val color_off : unit -> unit
 val set_color_mapping : (log_level -> string) -> unit
+
+(** {4 Functor interface (optional)} *)
+
+module type SECTION = sig
+
+  (** Signature for the functor parameters. *)
+
+  val section: string
+  (** Section name. *)
+
+end
+
+module Make (Section: SECTION): S
+(**
+   This module aims to be used on the first line of each module:
+
+   {| module Log = Log.Make(struct let section = "module-name" end) |}
+
+*)

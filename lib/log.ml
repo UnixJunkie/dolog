@@ -111,15 +111,43 @@ let timestamp_str lvl =
 let short_timestamp_str lvl =
   sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
 
-let log lvl lazy_msg =
-  if int_of_level lvl >= int_of_level !level then
-    (* let now = short_timestamp_str lvl in *)
-    let now = timestamp_str lvl in
-    fprintf !output "%s%s\n%!" now (Lazy.force lazy_msg)
-  else ()
+let section_width = ref 0
 
-let fatal lazy_msg = log FATAL lazy_msg
-let error lazy_msg = log ERROR lazy_msg
-let warn  lazy_msg = log WARN  lazy_msg
-let info  lazy_msg = log INFO  lazy_msg
-let debug lazy_msg = log DEBUG lazy_msg
+module type S = sig
+  val log: log_level -> string Lazy.t -> unit
+  val fatal : string Lazy.t -> unit
+  val error : string Lazy.t -> unit
+  val warn : string Lazy.t -> unit
+  val info : string Lazy.t -> unit
+  val debug : string Lazy.t -> unit
+
+end
+
+module type SECTION = sig
+  val section: string
+end
+
+module Make (S: SECTION) = struct
+
+  let () =
+    section_width := max (4 + String.length S.section) !section_width
+
+  let log lvl lazy_msg =
+    if int_of_level lvl >= int_of_level !level then
+      (* let now = short_timestamp_str lvl in *)
+      let now = timestamp_str lvl in
+      fprintf !output "%s%-*s%s\n%!" now !section_width S.section (Lazy.force lazy_msg)
+    else ()
+
+  let fatal lazy_msg = log FATAL lazy_msg
+  let error lazy_msg = log ERROR lazy_msg
+  let warn  lazy_msg = log WARN  lazy_msg
+  let info  lazy_msg = log INFO  lazy_msg
+  let debug lazy_msg = log DEBUG lazy_msg
+
+end
+
+include Make(struct
+    let section = ""
+    let width = 0
+  end)
