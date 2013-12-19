@@ -2,3 +2,4 @@
 * Clean the build system
 * Expose `Log.log` to the user
 * Add a functorial interface to handle sections
+* Add printf-like functions
