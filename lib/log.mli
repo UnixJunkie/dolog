@@ -55,13 +55,13 @@ module type S = sig
 
   (** {4 printf-like parameters} *)
 
-  val logf: log_level -> ('a, unit, string, unit) format4 -> 'a
+  val logf: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
 
-  val fatalf : ('a, unit, string, unit) format4 -> 'a
-  val errorf : ('a, unit, string, unit) format4 -> 'a
-  val warnf: ('a, unit, string, unit) format4 -> 'a
-  val infof : ('a, unit, string, unit) format4 -> 'a
-  val debugf : ('a, unit, string, unit) format4 -> 'a
+  val fatalf : ('a, out_channel, unit, unit) format4 -> 'a
+  val errorf : ('a, out_channel, unit, unit) format4 -> 'a
+  val warnf: ('a, out_channel, unit, unit) format4 -> 'a
+  val infof : ('a, out_channel, unit, unit) format4 -> 'a
+  val debugf : ('a, out_channel, unit, unit) format4 -> 'a
 
 end
 

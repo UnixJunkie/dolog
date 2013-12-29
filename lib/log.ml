@@ -126,12 +126,12 @@ module type S = sig
   val info : string Lazy.t -> unit
   val debug : string Lazy.t -> unit
 
-  val logf: log_level -> ('a, unit, string, unit) format4 -> 'a
-  val fatalf : ('a, unit, string, unit) format4 -> 'a
-  val errorf : ('a, unit, string, unit) format4 -> 'a
-  val warnf: ('a, unit, string, unit) format4 -> 'a
-  val infof : ('a, unit, string, unit) format4 -> 'a
-  val debugf : ('a, unit, string, unit) format4 -> 'a
+  val logf: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
+  val fatalf : ('a, out_channel, unit, unit) format4 -> 'a
+  val errorf : ('a, out_channel, unit, unit) format4 -> 'a
+  val warnf: ('a, out_channel, unit, unit) format4 -> 'a
+  val infof : ('a, out_channel, unit, unit) format4 -> 'a
+  val debugf : ('a, out_channel, unit, unit) format4 -> 'a
 end
 
 module type SECTION = sig
@@ -144,13 +144,16 @@ module Make (S: SECTION) = struct
     if S.section <> "" then
       section_width := max (String.length S.section) !section_width
 
+  let _pr_timestamp lvl =
+    (* let now = short_timestamp_str lvl in *)
+    let section = match !section_width with
+      | 0    -> None
+      | i    -> Some (Printf.sprintf "%-*s" i S.section) in
+    timestamp_str section lvl
+
   let log lvl lazy_msg =
     if int_of_level lvl >= int_of_level !level then
-      (* let now = short_timestamp_str lvl in *)
-      let section = match !section_width with
-        | 0    -> None
-        | i    -> Some (Printf.sprintf "%-*s" i S.section) in
-      let now = timestamp_str section lvl in
+      let now = _pr_timestamp lvl in
       fprintf !output "%s%s\n%!" now (Lazy.force lazy_msg)
     else ()
 
@@ -161,35 +164,25 @@ module Make (S: SECTION) = struct
   let debug lazy_msg = log DEBUG lazy_msg
 
   let logf lvl fmt =
-    Printf.ksprintf (fun str ->
-        log lvl (lazy str)
-      ) fmt
+    if int_of_level lvl >= int_of_level !level
+      then begin
+        let now = _pr_timestamp lvl in
+        Pervasives.output_string !output now;
+        Printf.kfprintf (fun oc ->
+          output_char oc '\n';
+          flush oc
+        ) !output fmt
+      end else Printf.ifprintf !output fmt
 
-  let fatalf fmt =
-    Printf.ksprintf (fun str ->
-        fatal (lazy str)
-      ) fmt
+  let fatalf fmt = logf FATAL fmt
 
-  let errorf fmt =
-    Printf.ksprintf (fun str ->
-        error (lazy str)
-      ) fmt
+  let errorf fmt = logf ERROR fmt
 
-  let warnf fmt =
-    Printf.ksprintf (fun str ->
-        warn (lazy str)
-      ) fmt
+  let warnf fmt = logf WARN fmt
 
-  let infof fmt =
-    Printf.ksprintf (fun str ->
-        info (lazy str)
-      ) fmt
+  let infof fmt = logf INFO fmt
 
-  let debugf fmt =
-    Printf.ksprintf (fun str ->
-        debug (lazy str)
-      ) fmt
-
+  let debugf fmt = logf DEBUG fmt
 end
 
 include Make(struct
