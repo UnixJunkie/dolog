@@ -49,8 +49,8 @@ module type S = sig
 
   val fatal : string Lazy.t -> unit
   val error : string Lazy.t -> unit
-  val warn : string Lazy.t -> unit
-  val info : string Lazy.t -> unit
+  val warn  : string Lazy.t -> unit
+  val info  : string Lazy.t -> unit
   val debug : string Lazy.t -> unit
 
   (** {4 printf-like parameters} *)
@@ -59,8 +59,8 @@ module type S = sig
 
   val fatalf : ('a, out_channel, unit, unit) format4 -> 'a
   val errorf : ('a, out_channel, unit, unit) format4 -> 'a
-  val warnf: ('a, out_channel, unit, unit) format4 -> 'a
-  val infof : ('a, out_channel, unit, unit) format4 -> 'a
+  val warnf  : ('a, out_channel, unit, unit) format4 -> 'a
+  val infof  : ('a, out_channel, unit, unit) format4 -> 'a
   val debugf : ('a, out_channel, unit, unit) format4 -> 'a
 
 end
