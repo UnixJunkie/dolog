@@ -35,7 +35,9 @@ let main () =
   Log.error (lazy "like");
   Log.warn  (lazy "it is");
   Log.info  (lazy "starting");
+  Log.color_on();
   Log.debug (lazy "to be useful ! (^-^)");
+  Log.color_off();
 
   Log.fatalf "%s" " ===== PRINTF-LIKE MESSAGES FOLLOW ===== ";
 
@@ -43,6 +45,7 @@ let main () =
   Log.errorf "%s" "like";
   Log.warnf  "%s" "it is";
   Log.infof  "%s" "starting";
+  Log.color_on();
   Log.debugf "%s" "to be useful ! (^-^)"
 ;;
 
