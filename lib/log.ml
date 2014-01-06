@@ -93,45 +93,22 @@ let color_on () =
 let color_off () =
   set_color_mapping string_of_level
 
-let string_of_section = function
-  | None   -> ""
-  | Some s -> s ^ " "
-
-let timestamp_str section lvl =
-  let ts = Unix.gettimeofday() in
-  let tm = Unix.localtime ts in
-  let us, _s = modf ts in
-  (* example: "2012-01-13 18:26:52.091" *)
-  sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
-    (1900 + tm.Unix.tm_year)
-    (1    + tm.Unix.tm_mon)
-    (tm.Unix.tm_mday)
-    (tm.Unix.tm_hour)
-    (tm.Unix.tm_min)
-    (tm.Unix.tm_sec)
-    (int_of_float (1_000. *. us))
-    (string_of_section section)
-    (!level_to_string lvl)
-
-let short_timestamp_str lvl =
-  sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
-
 let section_width = ref 0
 
 module type S = sig
   val log: log_level -> string Lazy.t -> unit
   val fatal : string Lazy.t -> unit
   val error : string Lazy.t -> unit
-  val warn : string Lazy.t -> unit
-  val info : string Lazy.t -> unit
+  val warn  : string Lazy.t -> unit
+  val info  : string Lazy.t -> unit
   val debug : string Lazy.t -> unit
 
-  val logf: log_level -> ('a, unit, string, unit) format4 -> 'a
-  val fatalf : ('a, unit, string, unit) format4 -> 'a
-  val errorf : ('a, unit, string, unit) format4 -> 'a
-  val warnf: ('a, unit, string, unit) format4 -> 'a
-  val infof : ('a, unit, string, unit) format4 -> 'a
-  val debugf : ('a, unit, string, unit) format4 -> 'a
+  val logf   : log_level -> ('a, out_channel, unit, unit) format4 -> 'a
+  val fatalf : ('a, out_channel, unit, unit) format4 -> 'a
+  val errorf : ('a, out_channel, unit, unit) format4 -> 'a
+  val warnf  : ('a, out_channel, unit, unit) format4 -> 'a
+  val infof  : ('a, out_channel, unit, unit) format4 -> 'a
+  val debugf : ('a, out_channel, unit, unit) format4 -> 'a
 end
 
 module type SECTION = sig
@@ -144,15 +121,47 @@ module Make (S: SECTION) = struct
     if S.section <> "" then
       section_width := max (String.length S.section) !section_width
 
+  let timestamp_str lvl =
+    let section =
+      if !section_width = 0 then ""
+      else sprintf "%-*s " !section_width S.section
+    in
+    let ts = Unix.gettimeofday() in
+    let tm = Unix.localtime ts in
+    let us, _s = modf ts in
+    (* example: "2012-01-13 18:26:52.091" *)
+    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
+      (1900 + tm.Unix.tm_year)
+      (1    + tm.Unix.tm_mon)
+      tm.Unix.tm_mday
+      tm.Unix.tm_hour
+      tm.Unix.tm_min
+      tm.Unix.tm_sec
+      (int_of_float (1_000. *. us))
+      section
+      (!level_to_string lvl)
+
+  (* example for a shorter timestamp string *)
+  let short_timestamp_str lvl =
+    sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
+
   let log lvl lazy_msg =
-    if int_of_level lvl >= int_of_level !level then
-      (* let now = short_timestamp_str lvl in *)
-      let section = match !section_width with
-        | 0    -> None
-        | i    -> Some (Printf.sprintf "%-*s" i S.section) in
-      let now = timestamp_str section lvl in
+    if int_of_level lvl >= int_of_level !level then begin
+      let now = timestamp_str lvl in
       fprintf !output "%s%s\n%!" now (Lazy.force lazy_msg)
-    else ()
+    end
+
+  let logf lvl fmt =
+    if int_of_level lvl >= int_of_level !level then begin
+      let now = timestamp_str lvl in
+      fprintf !output "%s" now;
+      (* there is the risk this log message will interleave with another
+         but I don't think it is possible to do otherwise *)
+      kfprintf (fun out ->
+        fprintf out "\n%!"
+      ) !output fmt
+    end else
+      ifprintf !output fmt
 
   let fatal lazy_msg = log FATAL lazy_msg
   let error lazy_msg = log ERROR lazy_msg
@@ -160,39 +169,15 @@ module Make (S: SECTION) = struct
   let info  lazy_msg = log INFO  lazy_msg
   let debug lazy_msg = log DEBUG lazy_msg
 
-  let logf lvl fmt =
-    Printf.ksprintf (fun str ->
-        log lvl (lazy str)
-      ) fmt
-
-  let fatalf fmt =
-    Printf.ksprintf (fun str ->
-        fatal (lazy str)
-      ) fmt
-
-  let errorf fmt =
-    Printf.ksprintf (fun str ->
-        error (lazy str)
-      ) fmt
-
-  let warnf fmt =
-    Printf.ksprintf (fun str ->
-        warn (lazy str)
-      ) fmt
-
-  let infof fmt =
-    Printf.ksprintf (fun str ->
-        info (lazy str)
-      ) fmt
-
-  let debugf fmt =
-    Printf.ksprintf (fun str ->
-        debug (lazy str)
-      ) fmt
+  let fatalf fmt = logf FATAL fmt
+  let errorf fmt = logf ERROR fmt
+  let warnf  fmt = logf WARN  fmt
+  let infof  fmt = logf INFO  fmt
+  let debugf fmt = logf DEBUG fmt
 
 end
 
-include Make(struct
-    let section = ""
-    let width = 0
-  end)
+include Make (struct
+  let section = ""
+  let width = 0
+end)
