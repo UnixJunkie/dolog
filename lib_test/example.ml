@@ -33,9 +33,17 @@ let main () =
 
   Log.fatal (lazy "Look");
   Log.error (lazy "like");
-  Log.warn (lazy "it is");
-  Log.info (lazy "starting");
-  Log.debug (lazy "to be useful ! (^-^)")
+  Log.warn  (lazy "it is");
+  Log.info  (lazy "starting");
+  Log.debug (lazy "to be useful ! (^-^)");
+
+  Log.fatalf "%s" " ===== PRINTF-LIKE MESSAGES FOLLOW ===== ";
+
+  Log.fatalf "%s" "Look";
+  Log.errorf "%s" "like";
+  Log.warnf  "%s" "it is";
+  Log.infof  "%s" "starting";
+  Log.debugf "%s" "to be useful ! (^-^)"
 ;;
 
 main()
