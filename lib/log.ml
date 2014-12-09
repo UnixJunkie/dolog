@@ -50,6 +50,14 @@ let string_of_level = function
   | INFO  -> "INFO "
   | DEBUG -> "DEBUG"
 
+let level_of_string = function
+  | "FATAL" | "fatal" -> FATAL
+  | "ERROR" | "error" -> ERROR
+  | "WARN"  | "warn"  -> WARN
+  | "INFO"  | "info"  -> INFO
+  | "DEBUG" | "debug" -> DEBUG
+  | str -> failwith ("no such log level: " ^ str)
+
 (* defaults *)
 let level           = ref ERROR
 let output          = ref stderr

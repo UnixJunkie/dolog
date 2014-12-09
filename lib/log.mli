@@ -31,6 +31,9 @@
 
 type log_level = FATAL | ERROR | WARN | INFO | DEBUG
 
+val string_of_level : log_level -> string
+val level_of_string : string -> log_level
+
 (** {4 Setup} *)
 
 val set_log_level : log_level -> unit
