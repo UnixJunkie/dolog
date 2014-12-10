@@ -147,15 +147,10 @@ module Make (S: SECTION) = struct
     sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
 
   let log lvl fmt =
-    if int_of_level lvl >= int_of_level !level then begin
+    if int_of_level lvl >= int_of_level !level then
       let now = timestamp_str lvl in
-      fprintf !output "%s" now;
-      (* there is the risk this log message will interleave with another
-         but I don't think it is possible to do otherwise *)
-      kfprintf (fun out ->
-        fprintf out "\n%!"
-      ) !output fmt
-    end else
+      fprintf !output ("%s" ^^ fmt ^^ "\n%!") now
+    else
       ifprintf !output fmt
 
   let fatal fmt = log FATAL fmt
@@ -167,6 +162,6 @@ module Make (S: SECTION) = struct
 end
 
 include Make (struct
-  let section = ""
-  let width = 0
-end)
+    let section = ""
+    let width = 0
+  end)
