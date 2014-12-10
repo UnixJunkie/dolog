@@ -1,4 +1,5 @@
-(* Copyright (c) 2013, Zhang Initiative Research Unit,
+(* Copyright (c) 2014, INRIA.
+ * Copyright (c) 2013, Zhang Initiative Research Unit,
  * Advance Science Institute, RIKEN
  * 2-1 Hirosawa, Wako, Saitama 351-0198, Japan
  * All rights reserved.
