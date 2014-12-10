@@ -40,31 +40,17 @@ val set_log_level : log_level -> unit
 val get_log_level : unit -> log_level
 val set_output : out_channel -> unit
 
-(** {4 Logging primitives} *)
+(** {4 Printf-like logging primitives} *)
 
 module type S = sig
 
-  (** Signature for logging primitives. *)
+  val log: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
 
-  (** {4 Lazy parameters} *)
-
-  val log: log_level -> string Lazy.t -> unit
-
-  val fatal : string Lazy.t -> unit
-  val error : string Lazy.t -> unit
-  val warn  : string Lazy.t -> unit
-  val info  : string Lazy.t -> unit
-  val debug : string Lazy.t -> unit
-
-  (** {4 printf-like parameters} *)
-
-  val logf: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
-
-  val fatalf : ('a, out_channel, unit, unit) format4 -> 'a
-  val errorf : ('a, out_channel, unit, unit) format4 -> 'a
-  val warnf  : ('a, out_channel, unit, unit) format4 -> 'a
-  val infof  : ('a, out_channel, unit, unit) format4 -> 'a
-  val debugf : ('a, out_channel, unit, unit) format4 -> 'a
+  val fatal : ('a, out_channel, unit, unit) format4 -> 'a
+  val error : ('a, out_channel, unit, unit) format4 -> 'a
+  val warn  : ('a, out_channel, unit, unit) format4 -> 'a
+  val info  : ('a, out_channel, unit, unit) format4 -> 'a
+  val debug : ('a, out_channel, unit, unit) format4 -> 'a
 
 end
 

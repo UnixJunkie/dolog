@@ -3,31 +3,17 @@ let () =
 
   Log.color_on();
 
-  Log.fatal (lazy "Is it fatal?");
-  Log.error (lazy "Or just an error?");
-  Log.warn  (lazy "Maybe only a warning sign?");
-  Log.info  (lazy "Is it informative at least?");
-  Log.debug (lazy "What? It was an old debugging trace?!");
-
-  Log.fatalf "%s" "Look";
-  Log.errorf "%s" "like";
-  Log.warnf  "%s" "it is";
-  Log.infof  "%s" "starting";
-  Log.debugf "%s" "to be useful ! (^-^)";
+  Log.fatal "%s" "Look";
+  Log.error "%s" "like";
+  Log.warn  "%s" "it is";
+  Log.info  "%s" "starting";
+  Log.debug "%s" "to be useful ! (^-^)";
 
   Log.color_off();
-
-  Log.fatal (lazy "Is it fatal?");
-  Log.error (lazy "Or just an error?");
-  Log.warn  (lazy "Maybe only a warning sign?");
-  Log.info  (lazy "Is it informative at least?");
-  Log.debug (lazy "What? It was an old debugging trace?!")
 
 module L1 = Log.Make(struct let section = "l1" end)
 module L2 = Log.Make(struct let section = "---l2---" end)
 
 let () =
   Log.color_on();
-  L1.debug (lazy "haha");
-  L2.debug (lazy "hoho");
-  L2.debugf "%s" "hihi";
+  L2.debug "%s" "hihi";

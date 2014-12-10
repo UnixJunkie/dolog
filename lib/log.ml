@@ -104,19 +104,12 @@ let color_off () =
 let section_width = ref 0
 
 module type S = sig
-  val log: log_level -> string Lazy.t -> unit
-  val fatal : string Lazy.t -> unit
-  val error : string Lazy.t -> unit
-  val warn  : string Lazy.t -> unit
-  val info  : string Lazy.t -> unit
-  val debug : string Lazy.t -> unit
-
-  val logf   : log_level -> ('a, out_channel, unit, unit) format4 -> 'a
-  val fatalf : ('a, out_channel, unit, unit) format4 -> 'a
-  val errorf : ('a, out_channel, unit, unit) format4 -> 'a
-  val warnf  : ('a, out_channel, unit, unit) format4 -> 'a
-  val infof  : ('a, out_channel, unit, unit) format4 -> 'a
-  val debugf : ('a, out_channel, unit, unit) format4 -> 'a
+  val log   : log_level -> ('a, out_channel, unit, unit) format4 -> 'a
+  val fatal : ('a, out_channel, unit, unit) format4 -> 'a
+  val error : ('a, out_channel, unit, unit) format4 -> 'a
+  val warn  : ('a, out_channel, unit, unit) format4 -> 'a
+  val info  : ('a, out_channel, unit, unit) format4 -> 'a
+  val debug : ('a, out_channel, unit, unit) format4 -> 'a
 end
 
 module type SECTION = sig
@@ -153,13 +146,7 @@ module Make (S: SECTION) = struct
   let short_timestamp_str lvl =
     sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
 
-  let log lvl lazy_msg =
-    if int_of_level lvl >= int_of_level !level then begin
-      let now = timestamp_str lvl in
-      fprintf !output "%s%s\n%!" now (Lazy.force lazy_msg)
-    end
-
-  let logf lvl fmt =
+  let log lvl fmt =
     if int_of_level lvl >= int_of_level !level then begin
       let now = timestamp_str lvl in
       fprintf !output "%s" now;
@@ -171,17 +158,11 @@ module Make (S: SECTION) = struct
     end else
       ifprintf !output fmt
 
-  let fatal lazy_msg = log FATAL lazy_msg
-  let error lazy_msg = log ERROR lazy_msg
-  let warn  lazy_msg = log WARN  lazy_msg
-  let info  lazy_msg = log INFO  lazy_msg
-  let debug lazy_msg = log DEBUG lazy_msg
-
-  let fatalf fmt = logf FATAL fmt
-  let errorf fmt = logf ERROR fmt
-  let warnf  fmt = logf WARN  fmt
-  let infof  fmt = logf INFO  fmt
-  let debugf fmt = logf DEBUG fmt
+  let fatal fmt = log FATAL fmt
+  let error fmt = log ERROR fmt
+  let warn  fmt = log WARN  fmt
+  let info  fmt = log INFO  fmt
+  let debug fmt = log DEBUG fmt
 
 end
 

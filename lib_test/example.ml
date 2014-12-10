@@ -31,22 +31,14 @@ let main () =
 
   Log.set_output stdout;
 
-  Log.fatal (lazy "Look");
-  Log.error (lazy "like");
-  Log.warn  (lazy "it is");
-  Log.info  (lazy "starting");
-  Log.color_on();
-  Log.debug (lazy "to be useful ! (^-^)");
-  Log.color_off();
+  Log.fatal "%s" " ===== PRINTF-LIKE MESSAGES ===== ";
 
-  Log.fatalf "%s" " ===== PRINTF-LIKE MESSAGES FOLLOW ===== ";
-
-  Log.fatalf "%s" "Look";
-  Log.errorf "%s" "like";
-  Log.warnf  "%s" "it is";
-  Log.infof  "%s" "starting";
+  Log.fatal "%s" "Look";
+  Log.error "%s" "like";
+  Log.warn  "%s" "it is";
+  Log.info  "%s" "starting";
   Log.color_on();
-  Log.debugf "%s" "to be useful ! (^-^)"
+  Log.debug "%s" "to be useful ! (^-^)"
 ;;
 
 main()
