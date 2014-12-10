@@ -77,7 +77,5 @@ end
 module Make (Section: SECTION): S
 (**
    This module aims to be used on the first line of each module:
-
-   {| module Log = Log.Make(struct let section = "module-name" end) |}
-
+   module Log = Log.Make(struct let section = "module-name" end)
 *)
