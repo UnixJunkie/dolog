@@ -1,7 +1,8 @@
 1.0.0
-* updated copyright
 * removed logging statements taking a lazy string as a parameter
 * simpler log function
+* updated copyright
+* corrected ocamldoc
 0.6.0
 * exposed string_of_level
 * added level_of_string
