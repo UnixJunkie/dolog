@@ -9,7 +9,6 @@ BuildTools:  ocamlbuild
 
 Library dolog
   Path:           lib
-  BuildDepends:   unix
   CompiledObject: best
   Modules:        Log
 

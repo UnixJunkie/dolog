@@ -128,24 +128,8 @@ module Make (S: SECTION) = struct
       if !section_width = 0 then ""
       else sprintf "%-*s " !section_width S.section
     in
-    let ts = Unix.gettimeofday() in
-    let tm = Unix.localtime ts in
-    let us, _s = modf ts in
-    (* example: "2012-01-13 18:26:52.091" *)
-    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
-      (1900 + tm.Unix.tm_year)
-      (1    + tm.Unix.tm_mon)
-      tm.Unix.tm_mday
-      tm.Unix.tm_hour
-      tm.Unix.tm_min
-      tm.Unix.tm_sec
-      (int_of_float (1_000. *. us))
-      section
-      (!level_to_string lvl)
-
-  (* example for a shorter timestamp string *)
-  let short_timestamp_str lvl =
-    sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
+    let ts = Sys.time() in
+    sprintf "%.3f %s%s: " ts section (!level_to_string lvl)
 
   let log lvl fmt =
     if int_of_level lvl >= int_of_level !level then
