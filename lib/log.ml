@@ -59,9 +59,29 @@ let level_of_string = function
   | "DEBUG" | "debug" -> DEBUG
   | str -> failwith ("no such log level: " ^ str)
 
+let sys_timestamp_str () =
+  sprintf "%.3f" (Sys.time ())
+(* 
+  (* the unix-dependant default: *)
+  let unix_timestamp () =
+    let ts = Unix.gettimeofday() in
+    let tm = Unix.localtime ts in
+    let us, _s = modf ts in
+    (* example: "2012-01-13 18:26:52.091" *)
+    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d"
+      (1900 + tm.Unix.tm_year)
+      (1    + tm.Unix.tm_mon)
+      tm.Unix.tm_mday
+      tm.Unix.tm_hour
+      tm.Unix.tm_min
+      tm.Unix.tm_sec
+      (int_of_float (1_000. *. us))
+*)
+
 (* defaults *)
 let level           = ref ERROR
 let output          = ref stderr
+let timestamp_fun   = ref sys_timestamp_str
 let level_to_string = ref string_of_level (* no colors by default *)
 
 let set_log_level l =
@@ -72,6 +92,12 @@ let get_log_level () =
 
 let set_output o =
   output := o
+
+let set_timestamp_fun f =
+  timestamp_fun := f
+
+let get_timestamp_fun () =
+  !timestamp_fun
 
 (* ANSI terminal colors for UNIX:
    let fg_black   = "\027[30m"
@@ -128,24 +154,10 @@ module Make (S: SECTION) = struct
       if !section_width = 0 then ""
       else sprintf "%-*s " !section_width S.section
     in
-    let ts = Unix.gettimeofday() in
-    let tm = Unix.localtime ts in
-    let us, _s = modf ts in
-    (* example: "2012-01-13 18:26:52.091" *)
-    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
-      (1900 + tm.Unix.tm_year)
-      (1    + tm.Unix.tm_mon)
-      tm.Unix.tm_mday
-      tm.Unix.tm_hour
-      tm.Unix.tm_min
-      tm.Unix.tm_sec
-      (int_of_float (1_000. *. us))
+    sprintf "%s %s%s: "
+      (!timestamp_fun ())
       section
       (!level_to_string lvl)
-
-  (* example for a shorter timestamp string *)
-  let short_timestamp_str lvl =
-    sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
 
   let log lvl fmt =
     if int_of_level lvl >= int_of_level !level then
