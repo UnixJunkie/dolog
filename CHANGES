@@ -1,3 +1,8 @@
+1.0 (no_unix)
+* remove dependency on the Unix module
+* added set_timestamp_fun
+* added get_timestamp_fun
+* the default timestamp_fun is Sys.time
 1.0.0
 * removed logging statements taking a lazy string as a parameter
 * simpler log function
