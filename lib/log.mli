@@ -40,6 +40,8 @@ val level_of_string : string -> log_level
 val set_log_level : log_level -> unit
 val get_log_level : unit -> log_level
 val set_output : out_channel -> unit
+val set_prefix : string -> unit
+val clear_prefix : unit -> unit
 
 (** {4 Printf-like logging primitives} *)
 

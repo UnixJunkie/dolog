@@ -63,6 +63,7 @@ let level_of_string = function
 let level           = ref ERROR
 let output          = ref stderr
 let level_to_string = ref string_of_level (* no colors by default *)
+let prefix          = ref ""
 
 let set_log_level l =
   level := l
@@ -72,6 +73,12 @@ let get_log_level () =
 
 let set_output o =
   output := o
+
+let set_prefix p =
+  prefix := p
+
+let clear_prefix () =
+  prefix := ""
 
 (* ANSI terminal colors for UNIX:
    let fg_black   = "\027[30m"
@@ -132,7 +139,7 @@ module Make (S: SECTION) = struct
     let tm = Unix.localtime ts in
     let us, _s = modf ts in
     (* example: "2012-01-13 18:26:52.091" *)
-    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
+    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s%s: "
       (1900 + tm.Unix.tm_year)
       (1    + tm.Unix.tm_mon)
       tm.Unix.tm_mday
@@ -142,6 +149,7 @@ module Make (S: SECTION) = struct
       (int_of_float (1_000. *. us))
       section
       (!level_to_string lvl)
+      !prefix
 
   (* example for a shorter timestamp string *)
   let short_timestamp_str lvl =

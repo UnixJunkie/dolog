@@ -39,7 +39,16 @@ let main () =
   Log.warn  "%s" "it is";
   Log.info  "%s" "starting";
   Log.color_on();
-  Log.debug "%s" "to be useful ! (^-^)"
+  Log.debug "%s" "to be useful ! (^-^)";
+
+  Log.set_prefix " DAFT";
+  Log.fatal "%s" "hello";
+  Log.error "%s" "hello";
+  Log.warn  "%s" "hello";
+  Log.clear_prefix ();
+  Log.info  "%s" "hello";
+  Log.debug "%s" "hello";
+
 ;;
 
 main()
