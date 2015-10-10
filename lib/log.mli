@@ -61,9 +61,12 @@ include S
 
 (** {4 Coloring of log levels (optional)} *)
 
+type color = | Black | Red | Green | Yellow | Blue | Magenta 
+	     | Cyan | White | Default_color
+
 val color_on  : unit -> unit
 val color_off : unit -> unit
-val set_color_mapping : (log_level -> string) -> unit
+val set_color_mapping : (log_level -> color) -> unit
 
 (** {4 Functor interface (optional)} *)
 
