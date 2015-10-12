@@ -59,11 +59,37 @@ let level_of_string = function
   | "DEBUG" | "debug" -> DEBUG
   | str -> failwith ("no such log level: " ^ str)
 
+type color = Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
+           | Default
+
+(* ANSI terminal colors for UNIX *)
+let color_to_string = function
+  | Black   -> "\027[30m"
+  | Red     -> "\027[31m"
+  | Green   -> "\027[32m"
+  | Yellow  -> "\027[33m"
+  | Blue    -> "\027[34m"
+  | Magenta -> "\027[35m"
+  | Cyan    -> "\027[36m"
+  | White   -> "\027[37m"
+  | Default -> "\027[39m"
+
+let color_reset = "\027[0m"
+
+(* default log levels color mapping *)
+let color_of_level = function
+  | FATAL -> Magenta
+  | ERROR -> Red
+  | WARN  -> Yellow
+  | INFO  -> Green
+  | DEBUG -> Cyan
+
 (* defaults *)
-let level           = ref ERROR
-let output          = ref stderr
-let level_to_string = ref string_of_level (* no colors by default *)
-let prefix          = ref ""
+let level          = ref ERROR
+let output         = ref stderr
+let level_to_color = ref color_of_level
+let use_color      = ref false
+let prefix         = ref ""
 
 let set_log_level l =
   level := l
@@ -80,34 +106,22 @@ let set_prefix p =
 let clear_prefix () =
   prefix := ""
 
-(* ANSI terminal colors for UNIX:
-   let fg_black   = "\027[30m"
-   let fg_red     = "\027[31m"
-   let fg_green   = "\027[32m"
-   let fg_yellow  = "\027[33m"
-   let fg_blue    = "\027[34m"
-   let fg_magenta = "\027[35m"
-   let fg_cyan    = "\027[36m"
-   let fg_white   = "\027[37m"
-   let fg_default = "\027[39m"
-   let fg_reset   = "\027[0m"
-*)
-(* default log levels color mapping *)
-let colored_string_of_level = function
-  | FATAL -> "\027[35mFATAL\027[0m" (* magenta *)
-  | ERROR -> "\027[31mERROR\027[0m" (* red *)
-  | WARN  -> "\027[33mWARN \027[0m" (* yellow *)
-  | INFO  -> "\027[32mINFO \027[0m" (* green *)
-  | DEBUG -> "\027[36mDEBUG\027[0m" (* cyan *)
-
 let set_color_mapping f =
-  level_to_string := f
+  level_to_color := f
 
 let color_on () =
-  set_color_mapping colored_string_of_level
+  use_color := true
 
 let color_off () =
-  set_color_mapping string_of_level
+  use_color := false
+
+let level_to_string lvl =
+  let s = string_of_level lvl in
+  if !use_color then
+    let color = !level_to_color lvl in
+    (color_to_string color) ^ s ^ (color_reset)
+  else
+    s
 
 let section_width = ref 0
 
@@ -148,7 +162,7 @@ module Make (S: SECTION) = struct
       tm.Unix.tm_sec
       (int_of_float (1_000. *. us))
       section
-      (!level_to_string lvl)
+      (level_to_string lvl)
       !prefix
 
   (* example for a shorter timestamp string *)
