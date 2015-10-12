@@ -59,37 +59,37 @@ let level_of_string = function
   | "DEBUG" | "debug" -> DEBUG
   | str -> failwith ("no such log level: " ^ str)
 
-type color = | Black | Red | Green | Yellow | Blue | Magenta 
-	     | Cyan | White | Default_color
-      
+type color = Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
+           | Default
+
 (* ANSI terminal colors for UNIX *)
 let color_to_string = function
-  | Black -> "\027[30m"
-  | Red -> "\027[31m"
-  | Green -> "\027[32m"
-  | Yellow -> "\027[33m"
-  | Blue -> "\027[34m"
+  | Black   -> "\027[30m"
+  | Red     -> "\027[31m"
+  | Green   -> "\027[32m"
+  | Yellow  -> "\027[33m"
+  | Blue    -> "\027[34m"
   | Magenta -> "\027[35m"
-  | Cyan -> "\027[36m"
-  | White -> "\027[37m"
-  | Default_color -> "\027[39m"
+  | Cyan    -> "\027[36m"
+  | White   -> "\027[37m"
+  | Default -> "\027[39m"
 
 let color_reset = "\027[0m"
 
 (* default log levels color mapping *)
-let default_colored_string_of_level = function
-  | FATAL -> Magenta 
+let color_of_level = function
+  | FATAL -> Magenta
   | ERROR -> Red
   | WARN  -> Yellow
   | INFO  -> Green
   | DEBUG -> Cyan
 
 (* defaults *)
-let level           = ref ERROR
-let output          = ref stderr
-let level_to_color  = ref default_colored_string_of_level
-let use_color       = ref false
-let prefix          = ref ""
+let level          = ref ERROR
+let output         = ref stderr
+let level_to_color = ref color_of_level
+let use_color      = ref false
+let prefix         = ref ""
 
 let set_log_level l =
   level := l
@@ -120,7 +120,7 @@ let level_to_string lvl =
   if !use_color then
     let color = !level_to_color lvl in
     (color_to_string color) ^ s ^ (color_reset)
-  else 
+  else
     s
 
 let section_width = ref 0
@@ -162,7 +162,7 @@ module Make (S: SECTION) = struct
       tm.Unix.tm_sec
       (int_of_float (1_000. *. us))
       section
-      (level_to_string lvl) 
+      (level_to_string lvl)
       !prefix
 
   (* example for a shorter timestamp string *)

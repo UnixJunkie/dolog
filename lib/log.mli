@@ -61,8 +61,8 @@ include S
 
 (** {4 Coloring of log levels (optional)} *)
 
-type color = | Black | Red | Green | Yellow | Blue | Magenta 
-	     | Cyan | White | Default_color
+type color = Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
+           | Default
 
 val color_on  : unit -> unit
 val color_off : unit -> unit
