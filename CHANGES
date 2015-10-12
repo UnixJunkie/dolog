@@ -1,3 +1,5 @@
+2.0.0
+* it is easier to specify a new color mapping
 1.0.0
 * removed logging statements taking a lazy string as a parameter
 * simpler log function
