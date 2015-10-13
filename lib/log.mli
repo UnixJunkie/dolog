@@ -49,11 +49,11 @@ module type S = sig
 
   val log: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
 
-  val fatal : ('a, out_channel, unit, unit) format4 -> 'a
-  val error : ('a, out_channel, unit, unit) format4 -> 'a
-  val warn  : ('a, out_channel, unit, unit) format4 -> 'a
-  val info  : ('a, out_channel, unit, unit) format4 -> 'a
-  val debug : ('a, out_channel, unit, unit) format4 -> 'a
+  val fatal : ('a, out_channel, unit) format -> 'a
+  val error : ('a, out_channel, unit) format -> 'a
+  val warn  : ('a, out_channel, unit) format -> 'a
+  val info  : ('a, out_channel, unit) format -> 'a
+  val debug : ('a, out_channel, unit) format -> 'a
 
 end
 
