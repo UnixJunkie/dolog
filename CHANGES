@@ -1,3 +1,5 @@
+3.0.0
+* simpler signatures: ('a, 'b, 'c) format instead of ('a, 'b, 'c, 'c) format4
 2.0.0
 * it is easier to specify a new color mapping
 1.0.0
