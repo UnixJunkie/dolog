@@ -126,12 +126,12 @@ let level_to_string lvl =
 let section_width = ref 0
 
 module type S = sig
-  val log   : log_level -> ('a, out_channel, unit, unit) format4 -> 'a
-  val fatal : ('a, out_channel, unit, unit) format4 -> 'a
-  val error : ('a, out_channel, unit, unit) format4 -> 'a
-  val warn  : ('a, out_channel, unit, unit) format4 -> 'a
-  val info  : ('a, out_channel, unit, unit) format4 -> 'a
-  val debug : ('a, out_channel, unit, unit) format4 -> 'a
+  val log   : log_level -> ('a, out_channel, unit) format -> 'a
+  val fatal : ('a, out_channel, unit) format -> 'a
+  val error : ('a, out_channel, unit) format -> 'a
+  val warn  : ('a, out_channel, unit) format -> 'a
+  val info  : ('a, out_channel, unit) format -> 'a
+  val debug : ('a, out_channel, unit) format -> 'a
 end
 
 module type SECTION = sig
