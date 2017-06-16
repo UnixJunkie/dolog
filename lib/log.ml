@@ -186,5 +186,4 @@ end
 
 include Make (struct
     let section = ""
-    let width = 0
   end)
