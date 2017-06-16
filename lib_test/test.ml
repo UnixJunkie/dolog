@@ -13,7 +13,10 @@ let () =
 
 module L1 = Log.Make(struct let section = "l1" end)
 module L2 = Log.Make(struct let section = "---l2---" end)
+module L3 = Log.Make(struct let section = "-------- l3" end)
 
 let () =
   Log.color_on();
+  L1.debug "%s" "ohoh";
   L2.debug "%s" "hihi";
+  L3.debug "%s" "haha";
