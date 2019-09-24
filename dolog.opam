@@ -3,7 +3,6 @@ name: "dolog"
 authors: "Francois Berenger"
 maintainer: "unixjunkie@sdf.org"
 license: "BSD-3-Clause"
-synopsis: "The dumb OCaml logging library"
 homepage: "https://github.com/UnixJunkie/dolog"
 bug-reports: "https://github.com/UnixJunkie/dolog/issues"
 dev-repo: "git+https://github.com/UnixJunkie/dolog.git"
@@ -12,9 +11,11 @@ depends: [
   "dune"
   "base-unix"
 ]
-build: [
-  ["jbuilder" "build" "-p" name "-j" jobs]
-]
+build: ["jbuilder" "build" "-p" name "-j" jobs]
+synopsis: "The dumb OCaml logging library"
+description: """
+Very simple lazy logging library with optional colors.
+"""
 # url {
 #   src: "https://github.com/UnixJunkie/dolog/archive/vXXX.tar.gz"
 #   checksum: "md5=YYY"
