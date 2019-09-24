@@ -1,4 +1,5 @@
-(* Copyright (c) 2014, INRIA.
+(* Copyright (c) 2019, Francois Berenger.
+ * Copyright (c) 2014, INRIA.
  * Copyright (c) 2013, Zhang Initiative Research Unit,
  * Advance Science Institute, RIKEN
  * 2-1 Hirosawa, Wako, Saitama 351-0198, Japan
@@ -166,7 +167,7 @@ module Make (S: SECTION) = struct
       !prefix
 
   (* example for a shorter timestamp string *)
-  let short_timestamp_str lvl =
+  let _short_timestamp_str lvl =
     sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
 
   let log lvl fmt =
