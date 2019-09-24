@@ -1,26 +1,11 @@
-OASISFormat: 0.3
-Name:        dolog
-Version:     0.3
-Synopsis:    a simple logging library
-Authors:     Francois Berenger
-License:     BSD-3-clause
-Plugins:     META (0.3), DevFiles (0.3)
-BuildTools:  ocamlbuild
+(library
+  (name dolog)
+  (public_name dolog)
+  (modules log)
+  (libraries unix))
 
-Library dolog
-  Path:           lib
-  BuildDepends:   unix
-  CompiledObject: best
-  Modules:        Log
-
-Executable example
-  Path:          lib_test
-  Install:       false
-  mainIs:        example.ml
-  BuildDepends:  dolog
-
-Executable test
-  Path:          lib_test
-  Install:       false
-  mainIs:        test.ml
-  buildDepends:  dolog
+;; never installed executables
+(executables
+  (names test example)
+  (modules test example)
+  (libraries dolog))
