@@ -1,3 +1,5 @@
+4.0.0
+* the build system was switched from oasis to dune
 3.0.0
 * simpler signatures: ('a, 'b, 'c) format instead of ('a, 'b, 'c, 'c) format4
 2.0.0
