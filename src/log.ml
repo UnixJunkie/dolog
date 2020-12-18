@@ -172,6 +172,9 @@ let prefix_builder = ref timestamp_str
 let set_prefix_builder f =
   prefix_builder := f
 
+let get_prefix_builder () =
+  !prefix_builder
+
 let log lvl fmt =
   if int_of_level lvl >= int_of_level !level then
     let now = !prefix_builder lvl in

@@ -43,8 +43,9 @@ val set_output: out_channel -> unit
 val set_prefix: string -> unit
 val clear_prefix: unit -> unit
 val set_prefix_builder: (log_level -> string) -> unit
+val get_prefix_builder: unit -> (log_level -> string)
 
-(** create a short timestamp prefix *)
+(** Ready-to-use short timestamp builder *)
 val short_prefix_builder: log_level -> string
 
 (** {4 Printf-like logging primitives} *)
