@@ -32,55 +32,36 @@
 
 type log_level = FATAL | ERROR | WARN | INFO | DEBUG
 
-val string_of_level : log_level -> string
-val level_of_string : string -> log_level
+val string_of_level: log_level -> string
+val level_of_string: string -> log_level
 
 (** {4 Setup} *)
 
-val set_log_level : log_level -> unit
-val get_log_level : unit -> log_level
-val set_output : out_channel -> unit
-val set_prefix : string -> unit
-val clear_prefix : unit -> unit
+val set_log_level: log_level -> unit
+val get_log_level: unit -> log_level
+val set_output: out_channel -> unit
+val set_prefix: string -> unit
+val clear_prefix: unit -> unit
+val set_prefix_builder: (log_level -> string) -> unit
+
+(** create a short timestamp prefix *)
+val short_prefix_builder: log_level -> string
 
 (** {4 Printf-like logging primitives} *)
 
-module type S = sig
+val log: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
 
-  val log: log_level -> ('a, out_channel, unit, unit) format4 -> 'a
-
-  val fatal : ('a, out_channel, unit) format -> 'a
-  val error : ('a, out_channel, unit) format -> 'a
-  val warn  : ('a, out_channel, unit) format -> 'a
-  val info  : ('a, out_channel, unit) format -> 'a
-  val debug : ('a, out_channel, unit) format -> 'a
-
-end
-
-include S
+val fatal: ('a, out_channel, unit) format -> 'a
+val error: ('a, out_channel, unit) format -> 'a
+val warn : ('a, out_channel, unit) format -> 'a
+val info : ('a, out_channel, unit) format -> 'a
+val debug: ('a, out_channel, unit) format -> 'a
 
 (** {4 Coloring of log levels (optional)} *)
 
 type color = Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
            | Default
 
-val color_on  : unit -> unit
-val color_off : unit -> unit
-val set_color_mapping : (log_level -> color) -> unit
-
-(** {4 Functor interface (optional)} *)
-
-module type SECTION = sig
-
-  (** Signature for the functor parameters. *)
-
-  val section: string
-  (** Section name. *)
-
-end
-
-module Make (Section: SECTION): S
-(**
-   This module aims to be used on the first line of each module:
-   module Log = Log.Make(struct let section = "module-name" end)
-*)
+val color_on: unit -> unit
+val color_off: unit -> unit
+val set_color_mapping: (log_level -> color) -> unit
