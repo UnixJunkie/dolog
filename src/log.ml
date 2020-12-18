@@ -1,4 +1,4 @@
-(* Copyright (c) 2019, Francois Berenger.
+(* Copyright (c) 2020, Francois Berenger.
  * Copyright (c) 2014, INRIA.
  * Copyright (c) 2013, Zhang Initiative Research Unit,
  * Advance Science Institute, RIKEN
@@ -51,6 +51,13 @@ let string_of_level = function
   | WARN  -> "WARN "
   | INFO  -> "INFO "
   | DEBUG -> "DEBUG"
+
+let char_of_level = function
+  | FATAL -> 'F'
+  | ERROR -> 'E'
+  | WARN  -> 'W'
+  | INFO  -> 'I'
+  | DEBUG -> 'D'
 
 let level_of_string = function
   | "FATAL" | "fatal" -> FATAL
@@ -124,67 +131,56 @@ let level_to_string lvl =
   else
     s
 
-let section_width = ref 0
+let level_to_short_string lvl =
+  let c = char_of_level lvl in
+  if !use_color then
+    let color = !level_to_color lvl in
+    sprintf "%s%c%s" (color_to_string color) c (color_reset)
+  else
+    String.make 1 c
 
-module type S = sig
-  val log   : log_level -> ('a, out_channel, unit) format -> 'a
-  val fatal : ('a, out_channel, unit) format -> 'a
-  val error : ('a, out_channel, unit) format -> 'a
-  val warn  : ('a, out_channel, unit) format -> 'a
-  val info  : ('a, out_channel, unit) format -> 'a
-  val debug : ('a, out_channel, unit) format -> 'a
-end
+let short_prefix_builder lvl =
+  let ts = Unix.gettimeofday() in
+  let tm = Unix.localtime ts in
+  let us, _s = modf ts in
+  sprintf "%02d:%02d:%02d.%02d|%s%s: "
+    tm.Unix.tm_hour
+    tm.Unix.tm_min
+    tm.Unix.tm_sec
+    (int_of_float (100. *. us)) (* 1/100 s *)
+    (level_to_short_string lvl)
+    !prefix
 
-module type SECTION = sig
-  val section: string
-end
+let timestamp_str lvl =
+  let ts = Unix.gettimeofday() in
+  let tm = Unix.localtime ts in
+  let us, _s = modf ts in
+  (* example: "2012-01-13 18:26:52.091" *)
+  sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s: "
+    (1900 + tm.Unix.tm_year)
+    (1    + tm.Unix.tm_mon)
+    tm.Unix.tm_mday
+    tm.Unix.tm_hour
+    tm.Unix.tm_min
+    tm.Unix.tm_sec
+    (int_of_float (1_000. *. us))
+    (level_to_string lvl)
+    !prefix
 
-module Make (S: SECTION) = struct
+let prefix_builder = ref timestamp_str
 
-  let () =
-    if S.section <> "" then
-      section_width := max (String.length S.section) !section_width
+let set_prefix_builder f =
+  prefix_builder := f
 
-  let timestamp_str lvl =
-    let section =
-      if !section_width = 0 then ""
-      else sprintf "%-*s " !section_width S.section
-    in
-    let ts = Unix.gettimeofday() in
-    let tm = Unix.localtime ts in
-    let us, _s = modf ts in
-    (* example: "2012-01-13 18:26:52.091" *)
-    sprintf "%04d-%02d-%02d %02d:%02d:%02d.%03d %s%s%s: "
-      (1900 + tm.Unix.tm_year)
-      (1    + tm.Unix.tm_mon)
-      tm.Unix.tm_mday
-      tm.Unix.tm_hour
-      tm.Unix.tm_min
-      tm.Unix.tm_sec
-      (int_of_float (1_000. *. us))
-      section
-      (level_to_string lvl)
-      !prefix
+let log lvl fmt =
+  if int_of_level lvl >= int_of_level !level then
+    let now = !prefix_builder lvl in
+    fprintf !output ("%s" ^^ fmt ^^ "\n%!") now
+  else
+    ifprintf !output fmt
 
-  (* example for a shorter timestamp string *)
-  let _short_timestamp_str lvl =
-    sprintf "%.3f %s: " (Unix.gettimeofday()) (string_of_level lvl)
-
-  let log lvl fmt =
-    if int_of_level lvl >= int_of_level !level then
-      let now = timestamp_str lvl in
-      fprintf !output ("%s" ^^ fmt ^^ "\n%!") now
-    else
-      ifprintf !output fmt
-
-  let fatal fmt = log FATAL fmt
-  let error fmt = log ERROR fmt
-  let warn  fmt = log WARN  fmt
-  let info  fmt = log INFO  fmt
-  let debug fmt = log DEBUG fmt
-
-end
-
-include Make (struct
-    let section = ""
-  end)
+let fatal fmt = log FATAL fmt
+let error fmt = log ERROR fmt
+let warn  fmt = log WARN  fmt
+let info  fmt = log INFO  fmt
+let debug fmt = log DEBUG fmt
