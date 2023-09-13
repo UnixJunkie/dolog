@@ -9,4 +9,4 @@ user-defined prefix of log messages.
 
 WARNING: dolog uses local time to timestamp messages, _NOT_ GMT.
 
-lib_test/example.ml and lib_test/test.ml are working examples.
+src/example.ml and src/test.ml are working examples.
